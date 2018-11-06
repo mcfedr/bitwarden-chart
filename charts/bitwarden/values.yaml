@@ -1,0 +1,267 @@
+# Default values for bitwarden.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+mssql:
+  image:
+    repository: bitwarden/mssql
+    tag: 1.24.0
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  persistence:
+    data:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 10Gi
+      storageClass: ~
+    backups:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 10Gi
+      storageClass: ~
+  saPassword: ""
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1Gi
+    limits:
+      cpu: 500m
+      memory: 4Gi
+  tolerations:
+  - key: always
+    operator: Exists
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - preference:
+          matchExpressions:
+          - key: always
+            operator: Exists
+        weight: 100
+
+web:
+  replicaCount: 1
+  image:
+    repository: bitwarden/web
+    tag: 2.3.0
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 25m
+      memory: 30Mi
+    limits:
+      cpu: 200m
+      memory: 60Mi
+  tolerations: ~
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - preference:
+            matchExpressions:
+              - key: cloud.google.com/gke-preemptible
+                operator: Exists
+          weight: 100
+
+core:
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    storageClass: ~
+  tolerations: ~
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - preference:
+            matchExpressions:
+              - key: cloud.google.com/gke-preemptible
+                operator: Exists
+          weight: 100
+
+attachments:
+  image:
+    repository: bitwarden/attachments
+    tag: 1.24.0
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 25m
+      memory: 25Mi
+    limits:
+      cpu: 200m
+      memory: 100Mi
+
+api:
+  image:
+    repository: bitwarden/api
+    tag: 1.24.0
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 200m
+      memory: 200Mi
+    limits:
+      cpu: 500m
+      memory: 400Mi
+
+identity:
+  image:
+    repository: bitwarden/api
+    tag: 1.24.0
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  pfx: ""
+  certificatePassword: ""
+  resources:
+    requests:
+      cpu: 200m
+      memory: 200Mi
+    limits:
+      cpu: 500m
+      memory: 400Mi
+
+admin:
+  image:
+    repository: bitwarden/admin
+    tag: 1.24.0
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 25m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 200Mi
+
+setup:
+  image:
+    repository: bitwarden/admin
+    tag: 1.24.0
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 500m
+      memory: 200Mi
+    limits:
+      cpu: 10000m
+      memory: 400Mi
+
+icons:
+  replicaCount: 1
+  image:
+    repository: bitwarden/icons
+    tag: 1.24.0
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 25m
+      memory: 400Mi
+    limits:
+      cpu: 200m
+      memory: 500Mi
+  tolerations: ~
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - preference:
+            matchExpressions:
+              - key: cloud.google.com/gke-preemptible
+                operator: Exists
+          weight: 100
+
+notifications:
+  replicaCount: 1
+  image:
+    repository: bitwarden/notifications
+    tag: 1.24.0
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 25m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 200Mi
+  tolerations: ~
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - preference:
+            matchExpressions:
+              - key: cloud.google.com/gke-preemptible
+                operator: Exists
+          weight: 100
+
+nginx:
+  replicaCount: 1
+  image:
+    repository: bitwarden/nginx
+    tag: 1.24.0
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+  resources:
+    requests:
+      cpu: 25m
+      memory: 25Mi
+    limits:
+      cpu: 200m
+      memory: 100Mi
+  tolerations: ~
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - preference:
+            matchExpressions:
+              - key: cloud.google.com/gke-preemptible
+                operator: Exists
+          weight: 100
+
+ingress:
+  enabled: true
+  ip: ~
+  class: ~
+
+certificates:
+  issuer: letsencrypt-prod
+  kind: ClusterIssuer
+  type: http01
+  options: {}
+
+global:
+  coreVersion: 1.24.0
+  webVersion: 2.3.0
+  host: bitwarden.example.com
+  internalIdentityKey: ""
+  duoKey: ""
+  installationId: ""
+  installationKey: ""
+  yubicoClientId: ""
+  yubicoKey: ""
+  mail:
+    replyToEmail: bitwarden@example.com
+    host: mail.example.com
+    username: bitwarden@example.com
+    password: ""
+    ssl: "true"
+    port: "587"
+    useDefaultCredentials: "false"
+  disableUserRegistration: "false"
+  admins: "admin@example.com"
+
+nameOverride: ""
+fullnameOverride: ""

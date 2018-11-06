@@ -1,0 +1,25 @@
+{{- if .Values.mssql.persistence.data.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-mssql-data
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: mssql
+spec:
+  accessModes:
+    - {{ .Values.mssql.persistence.data.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.mssql.persistence.data.size | quote }}
+{{- if .Values.mssql.persistence.data.storageClass }}
+{{- if (eq "-" .Values.mssql.persistence.data.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: {{ .Values.mssql.persistence.data.storageClass | quote }}
+{{- end }}
+{{- end }}
+{{- end }}

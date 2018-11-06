@@ -1,0 +1,30 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-nginx
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+{{- if .Values.ingress.ip }}
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.ip | quote }}
+{{- end }}
+{{- if .Values.ingress.class }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.class | quote }}
+{{- end }}
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.global.host | quote }}
+      secretName: {{ include "bitwarden.fullname" . }}-nginx-tls
+  rules:
+    - host: {{ .Values.global.host | quote }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ include "bitwarden.fullname" . }}-nginx
+              servicePort: http
+{{- end -}}

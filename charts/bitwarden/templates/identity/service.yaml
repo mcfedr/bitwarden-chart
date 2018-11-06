@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-identity
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: identity
+spec:
+  type: {{ .Values.attachments.service.type }}
+  ports:
+    - port: 5000
+      targetPort: identity
+      protocol: TCP
+      name: identity
+  selector:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: core

@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-core
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: core
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: core
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: core
+    spec:
+      containers:
+      - name: attachments
+        image: "{{ .Values.attachments.image.repository }}:{{ .Values.attachments.image.tag }}"
+        imagePullPolicy: {{ .Values.attachments.image.pullPolicy }}
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ASPNETCORE_URLS
+          value: "http://+:5001"
+        ports:
+        - name: attachments
+          containerPort: 5001
+          protocol: TCP
+        volumeMounts:
+        - name: core-data
+          mountPath: /etc/bitwarden/core/attachments
+          subPath: attachments
+          readOnly: true
+        resources:
+{{ toYaml .Values.attachments.resources | indent 10 }}
+      - name: api
+        image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+        imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ASPNETCORE_URLS
+          value: "http://+:5002"
+{{ include "bitwarden.global" . | indent 8 }}
+        ports:
+        - name: api
+          containerPort: 5002
+          protocol: TCP
+        volumeMounts:
+        - name: core-data
+          mountPath: /etc/bitwarden/core
+        resources:
+{{ toYaml .Values.api.resources | indent 10 }}
+      - name: identity
+        image: "{{ .Values.identity.image.repository }}:{{ .Values.identity.image.tag }}"
+        imagePullPolicy: {{ .Values.identity.image.pullPolicy }}
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ASPNETCORE_URLS
+          value: "http://+:5003"
+{{ include "bitwarden.global" . | indent 8 }}
+        ports:
+        - name: identity
+          containerPort: 5003
+          protocol: TCP
+        volumeMounts:
+        - name: core-data
+          mountPath: /etc/bitwarden/core
+        - name: identity-conf
+          mountPath: /etc/bitwarden/identity
+        resources:
+{{ toYaml .Values.identity.resources | indent 10 }}
+      - name: admin
+        image: "{{ .Values.admin.image.repository }}:{{ .Values.admin.image.tag }}"
+        imagePullPolicy: {{ .Values.admin.image.pullPolicy }}
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ASPNETCORE_URLS
+          value: "http://+:5004"
+{{ include "bitwarden.global" . | indent 8 }}
+        ports:
+        - name: admin
+          containerPort: 5004
+          protocol: TCP
+        volumeMounts:
+        - name: core-data
+          mountPath: /etc/bitwarden/core
+        resources:
+{{ toYaml .Values.admin.resources | indent 10 }}
+      initContainers:
+      - name: setup
+        image: "{{ .Values.setup.image.repository }}:{{ .Values.setup.image.tag }}"
+        imagePullPolicy: {{ .Values.setup.image.pullPolicy }}
+        command: ["dotnet Setup.dll -update 1 -db 1 -os lin -corev $COREVERSION -webv $WEBVERSION"]
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: COREVERSION
+          value: {{ .Values.global.coreVersion }}
+        - name: WEBVERSION
+          value: {{ .Values.global.webVersion }}
+{{ include "bitwarden.global" . | indent 8 }}
+        volumeMounts:
+        - name: core-data
+          mountPath: /etc/bitwarden/core
+        resources:
+{{ toYaml .Values.setup.resources | indent 10 }}
+      volumes:
+      - name: core-data
+      {{- if .Values.core.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "bitwarden.fullname" . }}-core
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: identity-conf
+        secret:
+          secretName: {{ include "bitwarden.fullname" . }}-identity
+          items:
+            - key: identity.pfx
+              path: identity.pfx
+      tolerations:
+{{ toYaml .Values.core.tolerations | indent 8 }}
+      affinity:
+{{ toYaml .Values.core.affinity | indent 8 }}

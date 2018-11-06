@@ -1,0 +1,25 @@
+{{- if .Values.core.persistence.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-core
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: core
+spec:
+  accessModes:
+    - {{ .Values.core.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.core.persistence.size | quote }}
+{{- if .Values.core.persistence.storageClass }}
+{{- if (eq "-" .Values.core.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: {{ .Values.core.persistence.storageClass | quote }}
+{{- end }}
+{{- end }}
+{{- end }}

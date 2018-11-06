@@ -1,0 +1,24 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-nginx
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: nginx
+spec:
+  secretName: {{ include "bitwarden.fullname" . }}-nginx-tls
+  issuerRef:
+    name: {{ .Values.certificates.issuer }}
+    kind: {{ .Values.certificates.kind }}
+  commonName: {{ .Values.global.host | quote }}
+  dnsNames:
+    - {{ .Values.global.host | quote }}
+  acme:
+    config:
+      - domains:
+          - {{ .Values.global.host | quote }}
+        {{ .Values.certificates.type }}:
+{{ toYaml .Values.certificates.options | indent 10 }}

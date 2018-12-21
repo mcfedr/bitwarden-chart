@@ -101,7 +101,7 @@ spec:
       - name: setup
         image: "{{ .Values.setup.image.repository }}:{{ .Values.setup.image.tag }}"
         imagePullPolicy: {{ .Values.setup.image.pullPolicy }}
-        command: ["dotnet Setup.dll -update 1 -db 1 -os lin -corev $COREVERSION -webv $WEBVERSION"]
+        command: ["sh", "-c", "dotnet Setup.dll -update 1 -db 1 -os lin -corev $COREVERSION -webv $WEBVERSION"]
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Production"
@@ -113,6 +113,8 @@ spec:
         volumeMounts:
         - name: core-data
           mountPath: /etc/bitwarden/core
+        - name: setup-conf
+          mountPath: /bitwarden/env
         resources:
 {{ toYaml .Values.setup.resources | indent 10 }}
       volumes:
@@ -129,6 +131,12 @@ spec:
           items:
             - key: identity.pfx
               path: identity.pfx
+      - name: setup-conf
+        secret:
+          secretName: {{ include "bitwarden.fullname" . }}-mssql
+          items:
+            - key: global.override.env
+              path: global.override.env
       tolerations:
 {{ toYaml .Values.core.tolerations | indent 8 }}
       affinity:

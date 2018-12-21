@@ -34,6 +34,10 @@ Create chart name and version as used by the chart label.
 {{- define "bitwarden.global" -}}
 - name: globalSettings__selfHosted
   value: "true"
+- name: globalSettings__pushRelayBaseUri
+  value: "https://push.bitwarden.com"
+- name: globalSettings__installation__identityUri
+  value: "https://identity.bitwarden.com"
 - name: globalSettings__baseServiceUri__vault
   value: https://{{ .Values.global.host }}
 - name: globalSettings__baseServiceUri__api

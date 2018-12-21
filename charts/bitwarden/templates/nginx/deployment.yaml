@@ -32,14 +32,14 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: nginx-config
-          mountPath: /etc/bitwarden/nginx
+          mountPath: /etc/nginx/conf.d
         livenessProbe:
           httpGet:
-            path: /healthcheck
+            path: /server_ping
             port: http
         readinessProbe:
           httpGet:
-            path: /healthcheck
+            path: /server_ping
             port: http
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}

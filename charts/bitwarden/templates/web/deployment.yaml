@@ -21,6 +21,8 @@ spec:
         app.kubernetes.io/name: {{ include "bitwarden.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: web
+      annotations:
+        checksum/web-config: {{ include (print $.Template.BasePath "/web/configmap.yaml") . | sha256sum }}
     spec:
       containers:
       - name: web

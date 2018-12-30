@@ -40,14 +40,24 @@ Create chart name and version as used by the chart label.
   value: "https://identity.bitwarden.com"
 - name: globalSettings__baseServiceUri__vault
   value: https://{{ .Values.global.host }}
+- name: globalSettings__baseServiceUri__internalVault
+  value: http://{{ include "bitwarden.fullname" . }}-web:5000
 - name: globalSettings__baseServiceUri__api
   value: https://{{ .Values.global.host }}/api
+- name: globalSettings__baseServiceUri__internalApi
+  value: http://{{ include "bitwarden.fullname" . }}-api:5000
 - name: globalSettings__baseServiceUri__identity
   value: https://{{ .Values.global.host }}/identity
+- name: globalSettings__baseServiceUri__internalIdentity
+  value: http://{{ include "bitwarden.fullname" . }}-identity:5000
 - name: globalSettings__baseServiceUri__admin
   value: https://{{ .Values.global.host }}/admin
+- name: globalSettings__baseServiceUri__internalAdmin
+  value: http://{{ include "bitwarden.fullname" . }}-admin:5000
 - name: globalSettings__baseServiceUri__notifications
   value: https://{{ .Values.global.host }}/notifications
+- name: globalSettings__baseServiceUri__internalNotifications
+  value: http://{{ include "bitwarden.fullname" . }}-notifications:80
 - name: globalSettings__attachment__baseDirectory
   value: /etc/bitwarden/core/attachments
 - name: globalSettings__attachment__baseUrl

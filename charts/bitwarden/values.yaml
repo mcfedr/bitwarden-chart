@@ -5,7 +5,7 @@
 mssql:
   image:
     repository: bitwarden/mssql
-    tag: 1.28.0
+    tag: 1.29.0
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -44,7 +44,7 @@ web:
   replicaCount: 1
   image:
     repository: bitwarden/web
-    tag: 2.7.1
+    tag: 2.8.0
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -84,7 +84,7 @@ core:
 attachments:
   image:
     repository: bitwarden/attachments
-    tag: 1.28.0
+    tag: 1.29.0
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -99,7 +99,7 @@ attachments:
 api:
   image:
     repository: bitwarden/api
-    tag: 1.28.0
+    tag: 1.29.0
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -114,7 +114,7 @@ api:
 identity:
   image:
     repository: bitwarden/identity
-    tag: 1.28.0
+    tag: 1.29.0
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -131,7 +131,7 @@ identity:
 admin:
   image:
     repository: bitwarden/admin
-    tag: 1.28.0
+    tag: 1.29.0
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -146,7 +146,7 @@ admin:
 setup:
   image:
     repository: bitwarden/setup
-    tag: 1.28.0
+    tag: 1.29.0
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -160,7 +160,7 @@ icons:
   replicaCount: 1
   image:
     repository: bitwarden/icons
-    tag: 1.28.0
+    tag: 1.29.0
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -185,7 +185,7 @@ notifications:
   replicaCount: 1
   image:
     repository: bitwarden/notifications
-    tag: 1.28.0
+    tag: 1.29.0
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -210,7 +210,7 @@ nginx:
   replicaCount: 1
   image:
 #    repository: bitwarden/nginx
-#    tag: 1.28.0
+#    tag: 1.29.0
     repository: nginx
     tag: 1
     pullPolicy: IfNotPresent
@@ -245,8 +245,8 @@ certificates:
   options: {}
 
 global:
-  coreVersion: 1.28.0
-  webVersion: 2.7.1
+  coreVersion: 1.29.0
+  webVersion: 2.8.0
   host: bitwarden.example.com
   internalIdentityKey: ""
   duoKey: ""

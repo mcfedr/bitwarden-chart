@@ -29,6 +29,7 @@ spec:
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Production"
+{{ include "bitwarden.global" . | indent 8 }}
         ports:
         - name: http
           containerPort: 5000

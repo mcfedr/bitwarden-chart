@@ -30,6 +30,7 @@ spec:
           value: "Production"
         - name: ASPNETCORE_URLS
           value: "http://+:5001"
+{{ include "bitwarden.global" . | indent 8 }}
         ports:
         - name: attachments
           containerPort: 5001

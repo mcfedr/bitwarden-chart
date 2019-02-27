@@ -28,7 +28,7 @@ mssql:
     limits:
       cpu: 500m
       memory: 4Gi
-  tolerations: {}
+  tolerations: []
   affinity: {}
 
 web:
@@ -46,7 +46,7 @@ web:
     limits:
       cpu: 200m
       memory: 60Mi
-  tolerations: {}
+  tolerations: []
   affinity: {}
 
 core:
@@ -55,7 +55,7 @@ core:
     accessMode: ReadWriteOnce
     size: 10Gi
     storageClass: ~
-  tolerations: {}
+  tolerations: []
   affinity: {}
 
 attachments:
@@ -148,7 +148,7 @@ icons:
     limits:
       cpu: 200m
       memory: 500Mi
-  tolerations: {}
+  tolerations: []
   affinity: {}
 
 notifications:
@@ -166,7 +166,7 @@ notifications:
     limits:
       cpu: 200m
       memory: 200Mi
-  tolerations: {}
+  tolerations: []
   affinity: {}
 
 nginx:
@@ -186,7 +186,7 @@ nginx:
     limits:
       cpu: 200m
       memory: 100Mi
-  tolerations: {}
+  tolerations: []
   affinity: {}
 
 ingress:

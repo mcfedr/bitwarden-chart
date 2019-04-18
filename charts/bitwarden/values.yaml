@@ -235,6 +235,8 @@ ingress:
   enabled: true
   ip: ~
   class: ~
+  tls:
+    enabled: true
 
 certificates:
   issuer: letsencrypt-prod

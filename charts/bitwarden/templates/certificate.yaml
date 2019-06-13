@@ -1,3 +1,4 @@
+{{- if .Values.ingress.enabled -}}
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
@@ -13,12 +14,6 @@ spec:
   issuerRef:
     name: {{ .Values.certificates.issuer }}
     kind: {{ .Values.certificates.kind }}
-  commonName: {{ .Values.global.host | quote }}
   dnsNames:
     - {{ .Values.global.host | quote }}
-  acme:
-    config:
-      - domains:
-          - {{ .Values.global.host | quote }}
-        {{ .Values.certificates.type }}:
-{{ toYaml .Values.certificates.options | indent 10 }}
+{{- end -}}

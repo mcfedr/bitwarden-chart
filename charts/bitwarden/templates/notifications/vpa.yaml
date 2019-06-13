@@ -1,0 +1,19 @@
+{{- if and .Values.notifications.enabled .Values.notifications.vpa.enabled }}
+apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-notifications
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: notifications
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "bitwarden.fullname" . }}-notifications
+  updatePolicy:
+    updateMode: {{ .Values.notifications.vpa.updateMode | quote }}
+{{- end }}

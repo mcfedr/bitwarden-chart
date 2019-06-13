@@ -1,0 +1,21 @@
+{{- if or .Values.attachments.enabled .Values.api.enabled .Values.admin.enabled .Values.identity.enabled }}
+{{- if .Values.core.vpa.enabled }}
+apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-core
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: core
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: {{ include "bitwarden.fullname" . }}-core
+  updatePolicy:
+    updateMode: {{ .Values.core.vpa.updateMode | quote }}
+{{- end }}
+{{- end }}

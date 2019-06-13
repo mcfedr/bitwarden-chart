@@ -1,3 +1,4 @@
+{{- if .Values.nginx.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -68,6 +69,7 @@ data:
       add_header X-XSS-Protection "1; mode=block";
       add_header Strict-Transport-Security max-age=15768000;
 
+      {{- if .Values.web.enabled }}
       location / {
         proxy_pass http://{{ include "bitwarden.fullname" . }}-web:5000/;
         add_header Referrer-Policy same-origin;
@@ -95,23 +97,33 @@ data:
       location = /u2f-connector.html {
         proxy_pass http://{{ include "bitwarden.fullname" . }}-web:5000/u2f-connector.html;
       }
+      {{- end }}
 
+      {{- if .Values.api.enabled }}
       location /attachments/ {
         proxy_pass http://{{ include "bitwarden.fullname" . }}-attachments:5000/;
       }
+      {{- end }}
 
+      {{- if .Values.api.enabled }}
       location /api/ {
         proxy_pass http://{{ include "bitwarden.fullname" . }}-api:5000/;
       }
+      {{- end }}
 
+      {{- if .Values.identity.enabled }}
       location /identity/ {
         proxy_pass http://{{ include "bitwarden.fullname" . }}-identity:5000/;
       }
+      {{- end }}
 
+      {{- if .Values.icons.enabled }}
       location /icons/ {
         proxy_pass http://{{ include "bitwarden.fullname" . }}-icons:5000/;
       }
+      {{- end }}
 
+      {{- if .Values.notifications.enabled }}
       location /notifications/ {
         proxy_pass http://{{ include "bitwarden.fullname" . }}-notifications:5000/;
       }
@@ -121,7 +133,9 @@ data:
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $http_connection;
       }
+      {{- end }}
 
+      {{- if .Values.admin.enabled }}
       location /admin {
         proxy_pass http://{{ include "bitwarden.fullname" . }}-admin:5000;
         add_header Referrer-Policy same-origin;
@@ -130,9 +144,11 @@ data:
         add_header Strict-Transport-Security max-age=15768000;
         add_header X-Frame-Options SAMEORIGIN;
       }
+      {{- end }}
 
       location /server_ping {
         access_log off;
         return 200 "pong\n";
       }
     }
+{{- end }}

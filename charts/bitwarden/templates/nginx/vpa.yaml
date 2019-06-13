@@ -1,0 +1,19 @@
+{{- if and .Values.nginx.enabled .Values.nginx.vpa.enabled }}
+apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-nginx
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: nginx
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "bitwarden.fullname" . }}-nginx
+  updatePolicy:
+    updateMode: {{ .Values.nginx.vpa.updateMode | quote }}
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if or .Values.attachments.enabled .Values.api.enabled .Values.admin.enabled .Values.identity.enabled }}
 {{- if .Values.core.persistence.enabled -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -20,6 +21,7 @@ spec:
   storageClassName: ""
 {{- else }}
   storageClassName: {{ .Values.core.persistence.storageClass | quote }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

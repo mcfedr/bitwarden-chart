@@ -1,4 +1,4 @@
-{{- if .Values.mssql.persistence.data.enabled -}}
+{{- if and .Values.mssql.enabled .Values.mssql.persistence.data.enabled -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

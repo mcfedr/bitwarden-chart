@@ -1,6 +1,6 @@
-{{- if .Values.web.enabled }}
-apiVersion: v1
-kind: Service
+{{- if and .Values.web.enabled .Values.web.vpa.enabled }}
+apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
 metadata:
   name: {{ include "bitwarden.fullname" . }}-web
   labels:
@@ -10,14 +10,10 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: web
 spec:
-  type: {{ .Values.web.service.type }}
-  ports:
-    - port: 5000
-      targetPort: http
-      protocol: TCP
-      name: http
-  selector:
-    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: web
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "bitwarden.fullname" . }}-web
+  updatePolicy:
+    updateMode: {{ .Values.web.vpa.updateMode | quote }}
 {{- end }}

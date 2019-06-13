@@ -1,0 +1,19 @@
+{{- if and .Values.mssql.enabled .Values.mssql.vpa.enabled }}
+apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-mssql
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: mssql
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: {{ include "bitwarden.fullname" . }}-mssql
+  updatePolicy:
+    updateMode: {{ .Values.mssql.vpa.updateMode | quote }}
+{{- end }}

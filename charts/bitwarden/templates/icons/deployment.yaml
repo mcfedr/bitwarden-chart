@@ -1,3 +1,4 @@
+{{- if .Values.icons.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -39,3 +40,4 @@ spec:
 {{ toYaml .Values.icons.tolerations | indent 8 }}
       affinity:
 {{ toYaml .Values.icons.affinity | indent 8 }}
+{{- end }}

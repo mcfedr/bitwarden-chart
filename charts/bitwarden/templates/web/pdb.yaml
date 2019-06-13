@@ -1,6 +1,6 @@
-{{- if .Values.web.enabled }}
-apiVersion: v1
-kind: Service
+{{- if and .Values.web.enabled .Values.web.pdb.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
 metadata:
   name: {{ include "bitwarden.fullname" . }}-web
   labels:
@@ -10,14 +10,10 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: web
 spec:
-  type: {{ .Values.web.service.type }}
-  ports:
-    - port: 5000
-      targetPort: http
-      protocol: TCP
-      name: http
+  maxUnavailable: {{ .Values.web.pdb.maxUnavailable }}
   selector:
-    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: web
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: web
 {{- end }}

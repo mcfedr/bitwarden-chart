@@ -1,4 +1,5 @@
 mssql:
+  enabled: true
   image:
     repository: bitwarden/mssql
     tag: 1.30.4
@@ -26,8 +27,15 @@ mssql:
       memory: 4Gi
   tolerations: []
   affinity: {}
+  pdb:
+    enabled: false
+    maxUnavailable: 0
+  vpa:
+    enabled: true
+    updateMode: 'Off'
 
 web:
+  enabled: true
   replicaCount: 1
   image:
     repository: bitwarden/web
@@ -44,6 +52,12 @@ web:
       memory: 60Mi
   tolerations: []
   affinity: {}
+  pdb:
+    enabled: true
+    maxUnavailable: 20%
+  vpa:
+    enabled: true
+    updateMode: 'Off'
 
 core:
   persistence:
@@ -53,8 +67,15 @@ core:
     storageClass: ~
   tolerations: []
   affinity: {}
+  pdb:
+    enabled: false
+    maxUnavailable: 0
+  vpa:
+    enabled: true
+    updateMode: 'Off'
 
 attachments:
+  enabled: true
   image:
     repository: bitwarden/attachments
     tag: 1.30.4
@@ -70,6 +91,7 @@ attachments:
       memory: 100Mi
 
 api:
+  enabled: true
   image:
     repository: bitwarden/api
     tag: 1.30.4
@@ -85,6 +107,7 @@ api:
       memory: 400Mi
 
 identity:
+  enabled: true
   image:
     repository: bitwarden/identity
     tag: 1.30.4
@@ -102,6 +125,7 @@ identity:
       memory: 400Mi
 
 admin:
+  enabled: true
   image:
     repository: bitwarden/admin
     tag: 1.30.4
@@ -117,6 +141,7 @@ admin:
       memory: 200Mi
 
 setup:
+  enabled: false
   image:
     repository: bitwarden/setup
     tag: 1.30.4
@@ -130,6 +155,7 @@ setup:
       memory: 400Mi
 
 icons:
+  enabled: true
   replicaCount: 1
   image:
     repository: bitwarden/icons
@@ -146,8 +172,15 @@ icons:
       memory: 500Mi
   tolerations: []
   affinity: {}
+  pdb:
+    enabled: true
+    maxUnavailable: 20%
+  vpa:
+    enabled: true
+    updateMode: 'Off'
 
 notifications:
+  enabled: true
   replicaCount: 1
   image:
     repository: bitwarden/notifications
@@ -164,8 +197,15 @@ notifications:
       memory: 200Mi
   tolerations: []
   affinity: {}
+  pdb:
+    enabled: true
+    maxUnavailable: 20%
+  vpa:
+    enabled: true
+    updateMode: 'Off'
 
 nginx:
+  enabled: true
   replicaCount: 1
   image:
 #    repository: bitwarden/nginx
@@ -184,6 +224,12 @@ nginx:
       memory: 100Mi
   tolerations: []
   affinity: {}
+  pdb:
+    enabled: true
+    maxUnavailable: 20%
+  vpa:
+    enabled: true
+    updateMode: 'Off'
 
 ingress:
   enabled: true

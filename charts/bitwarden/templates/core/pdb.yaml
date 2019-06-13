@@ -1,0 +1,21 @@
+{{- if or .Values.attachments.enabled .Values.api.enabled .Values.admin.enabled .Values.identity.enabled }}
+{{- if .Values.core.pdb.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "bitwarden.fullname" . }}-core
+  labels:
+    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+    helm.sh/chart: {{ include "bitwarden.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: core
+spec:
+  maxUnavailable: {{ .Values.core.pdb.maxUnavailable }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: core
+{{- end }}
+{{- end }}

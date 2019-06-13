@@ -1,6 +1,6 @@
-{{- if .Values.mssql.enabled }}
-apiVersion: v1
-kind: Service
+{{- if and .Values.mssql.enabled .Values.mssql.pdb.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
 metadata:
   name: {{ include "bitwarden.fullname" . }}-mssql
   labels:
@@ -10,14 +10,10 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: mssql
 spec:
-  type: {{ .Values.mssql.service.type }}
-  ports:
-    - port: 1433
-      targetPort: mssql
-      protocol: TCP
-      name: mssql
+  maxUnavailable: {{ .Values.mssql.pdb.maxUnavailable }}
   selector:
-    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: mssql
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bitwarden.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: mssql
 {{- end }}

@@ -75,14 +75,18 @@ spec:
         volumeMounts:
         - name: core-data
           mountPath: /etc/bitwarden/core
-        livenessProbe:
-          httpGet:
-            path: /alive
-            port: api
-        readinessProbe:
-          httpGet:
-            path: /alive
-            port: api
+{{/*        livenessProbe:*/}}
+{{/*          httpGet:*/}}
+{{/*            path: /alive*/}}
+{{/*            port: api*/}}
+{{/*          initialDelaySeconds: 30*/}}
+{{/*          periodSeconds: 15*/}}
+{{/*        readinessProbe:*/}}
+{{/*          httpGet:*/}}
+{{/*            path: /alive*/}}
+{{/*            port: api*/}}
+{{/*          initialDelaySeconds: 30*/}}
+{{/*          periodSeconds: 15*/}}
         resources:
 {{ toYaml .Values.api.resources | indent 10 }}
       {{- end }}
@@ -105,14 +109,18 @@ spec:
           mountPath: /etc/bitwarden/core
         - name: identity-conf
           mountPath: /etc/bitwarden/identity
-        livenessProbe:
-          httpGet:
-            path: /alive
-            port: identity
-        readinessProbe:
-          httpGet:
-            path: /alive
-            port: identity
+{{/*        livenessProbe:*/}}
+{{/*          httpGet:*/}}
+{{/*            path: /.well-known/openid-configuration*/}}
+{{/*            port: identity*/}}
+{{/*          initialDelaySeconds: 60*/}}
+{{/*          periodSeconds: 15*/}}
+{{/*        readinessProbe:*/}}
+{{/*          httpGet:*/}}
+{{/*            path: /.well-known/openid-configuration*/}}
+{{/*            port: identity*/}}
+{{/*          initialDelaySeconds: 60*/}}
+{{/*          periodSeconds: 15*/}}
         resources:
 {{ toYaml .Values.identity.resources | indent 10 }}
       {{- end }}
@@ -133,14 +141,18 @@ spec:
         volumeMounts:
         - name: core-data
           mountPath: /etc/bitwarden/core
-        livenessProbe:
-          httpGet:
-            path: /alive
-            port: admin
-        readinessProbe:
-          httpGet:
-            path: /alive
-            port: admin
+{{/*        livenessProbe:*/}}
+{{/*          httpGet:*/}}
+{{/*            path: /*/}}
+{{/*            port: admin*/}}
+{{/*          initialDelaySeconds: 60*/}}
+{{/*          periodSeconds: 15*/}}
+{{/*        readinessProbe:*/}}
+{{/*          httpGet:*/}}
+{{/*            path: /*/}}
+{{/*            port: admin*/}}
+{{/*          initialDelaySeconds: 60*/}}
+{{/*          periodSeconds: 15*/}}
         resources:
 {{ toYaml .Values.admin.resources | indent 10 }}
       {{- end }}

@@ -36,11 +36,11 @@ spec:
           protocol: TCP
         livenessProbe:
           httpGet:
-            path: /alive
+            path: /google.com/icon.png
             port: http
         readinessProbe:
           httpGet:
-            path: /alive
+            path: /google.com/icon.png
             port: http
         resources:
 {{ toYaml .Values.icons.resources | indent 10 }}

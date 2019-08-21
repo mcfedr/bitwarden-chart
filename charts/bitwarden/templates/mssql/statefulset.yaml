@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: mssql
-        image: "{{ .Values.mssql.image.repository }}:{{ .Values.mssql.image.tag }}"
+        image: "{{ .Values.mssql.image.repository }}:{{ default .Values.global.coreVersion .Values.mssql.image.tag }}"
         imagePullPolicy: {{ .Values.mssql.image.pullPolicy }}
         env:
         - name: ACCEPT_EULA
@@ -46,13 +46,13 @@ spec:
         - name: mssql-backups
           mountPath: /etc/bitwarden/mssql/backups
         livenessProbe:
-          tcpSocket:
-            port: mssql
+          exec:
+            command: ["sh", "-c", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -Q \"SELECT 1\""]
           initialDelaySeconds: 15
           periodSeconds: 20
         readinessProbe:
-          tcpSocket:
-            port: mssql
+          exec:
+            command: ["sh", "-c", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -Q \"SELECT 1\""]
           initialDelaySeconds: 5
           periodSeconds: 10
         resources:

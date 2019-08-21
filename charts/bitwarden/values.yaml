@@ -2,7 +2,7 @@ mssql:
   enabled: true
   image:
     repository: bitwarden/mssql
-    tag: 1.30.4
+    tag: ~
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -24,7 +24,7 @@ mssql:
       memory: 1Gi
     limits:
       cpu: 500m
-      memory: 4Gi
+      memory: 2Gi
   tolerations: []
   affinity: {}
   pdb:
@@ -39,7 +39,7 @@ web:
   replicaCount: 1
   image:
     repository: bitwarden/web
-    tag: 2.10.1
+    tag: ~
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -78,7 +78,7 @@ attachments:
   enabled: true
   image:
     repository: bitwarden/attachments
-    tag: 1.30.4
+    tag: ~
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -94,7 +94,7 @@ api:
   enabled: true
   image:
     repository: bitwarden/api
-    tag: 1.30.4
+    tag: ~
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -110,7 +110,7 @@ identity:
   enabled: true
   image:
     repository: bitwarden/identity
-    tag: 1.30.4
+    tag: ~
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -128,7 +128,7 @@ admin:
   enabled: true
   image:
     repository: bitwarden/admin
-    tag: 1.30.4
+    tag: ~
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -144,7 +144,7 @@ setup:
   enabled: false
   image:
     repository: bitwarden/setup
-    tag: 1.30.4
+    tag: ~
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -159,7 +159,7 @@ icons:
   replicaCount: 1
   image:
     repository: bitwarden/icons
-    tag: 1.30.4
+    tag: ~
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -184,7 +184,7 @@ notifications:
   replicaCount: 1
   image:
     repository: bitwarden/notifications
-    tag: 1.30.4
+    tag: ~
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -241,8 +241,8 @@ certificates:
   kind: ClusterIssuer
 
 global:
-  coreVersion: 1.30.4
-  webVersion: 2.10.1
+  coreVersion: 1.31.1
+  webVersion: 2.11.0
   host: bitwarden.example.com
   internalIdentityKey: ""
   duoKey: ""

@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: notifications
-        image: "{{ .Values.notifications.image.repository }}:{{ .Values.notifications.image.tag }}"
+        image: "{{ .Values.notifications.image.repository }}:{{ default .Values.global.coreVersion .Values.notifications.image.tag }}"
         imagePullPolicy: {{ .Values.notifications.image.pullPolicy }}
         env:
         - name: ASPNETCORE_ENVIRONMENT
@@ -35,6 +35,14 @@ spec:
         - name: http
           containerPort: 5000
           protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /alive
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /alive
+            port: http
         resources:
 {{ toYaml .Values.notifications.resources | indent 10 }}
       tolerations:

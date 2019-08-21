@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
+        image: "{{ .Values.web.image.repository }}:{{ default .Values.global.webVersion .Values.web.image.tag }}"
         imagePullPolicy: {{ .Values.web.image.pullPolicy }}
         env:
         - name: ASPNETCORE_ENVIRONMENT

@@ -16,4 +16,9 @@ spec:
     name: {{ include "bitwarden.fullname" . }}-mssql
   updatePolicy:
     updateMode: {{ .Values.mssql.vpa.updateMode | quote }}
+  resourcePolicy:
+    containerPolicies:
+      - minAllowed:
+          requests:
+            cpu: 50m
 {{- end }}

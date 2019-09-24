@@ -71,6 +71,9 @@ data:
 
       {{- if .Values.web.enabled }}
       location / {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-web:5000/;
         add_header Referrer-Policy same-origin;
         add_header X-Content-Type-Options nosniff;
@@ -81,6 +84,9 @@ data:
       }
 
       location = /app-id.json {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-web:5000/app-id.json;
         add_header Referrer-Policy same-origin;
         add_header X-Content-Type-Options nosniff;
@@ -91,44 +97,68 @@ data:
       }
 
       location = /duo-connector.html {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-web:5000/duo-connector.html;
       }
 
       location = /u2f-connector.html {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-web:5000/u2f-connector.html;
       }
       {{- end }}
 
       {{- if .Values.api.enabled }}
       location /attachments/ {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-attachments:5000/;
       }
       {{- end }}
 
       {{- if .Values.api.enabled }}
       location /api/ {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-api:5000/;
       }
       {{- end }}
 
       {{- if .Values.identity.enabled }}
       location /identity/ {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-identity:5000/;
       }
       {{- end }}
 
       {{- if .Values.icons.enabled }}
       location /icons/ {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-icons:5000/;
       }
       {{- end }}
 
       {{- if .Values.notifications.enabled }}
       location /notifications/ {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-notifications:5000/;
       }
 
       location /notifications/hub {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-notifications:5000/hub;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $http_connection;
@@ -137,6 +167,9 @@ data:
 
       {{- if .Values.admin.enabled }}
       location /admin {
+        if ($http_x_forwarded_proto = "http") {
+            return 301 https://$host$request_uri;
+        }
         proxy_pass http://{{ include "bitwarden.fullname" . }}-admin:5000;
         add_header Referrer-Policy same-origin;
         add_header X-Content-Type-Options nosniff;

@@ -16,10 +16,12 @@ metadata:
     kubernetes.io/ingress.class: {{ .Values.ingress.class | quote }}
 {{- end }}
 spec:
+  {{- if and .Values.certificates.enabled -}}
   tls:
     - hosts:
         - {{ .Values.global.host | quote }}
       secretName: {{ include "bitwarden.fullname" . }}-nginx-tls
+  {{- end }}
   rules:
     - host: {{ .Values.global.host | quote }}
       http:

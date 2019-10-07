@@ -237,6 +237,7 @@ ingress:
   class: ~
 
 certificates:
+  enabled: true
   issuer: letsencrypt-prod
   kind: ClusterIssuer
 

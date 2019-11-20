@@ -16,7 +16,7 @@ metadata:
     kubernetes.io/ingress.class: {{ .Values.ingress.class | quote }}
 {{- end }}
 spec:
-  {{- if and .Values.certificates.enabled -}}
+  {{- if .Values.certificates.enabled }}
   tls:
     - hosts:
         - {{ .Values.global.host | quote }}

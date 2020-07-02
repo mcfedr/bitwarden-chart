@@ -1,0 +1,109 @@
+stages:
+  - pre_build
+  - pre_deploy
+  - deploy
+
+variables:
+  IMAGE_TAG: ${CI_COMMIT_REF_SLUG}.${CI_PIPELINE_ID}
+
+before_script:
+  - |
+    tags_variables() {
+      if [ "$CI_COMMIT_REF_SLUG" == "master" ]; then
+        if ! [ -x "$(command -v git)" ]; then
+          echo 'Error: git is not installed.' >&2
+          exit 1
+        fi
+        COMMIT_DATE=$(git show -s --format=%ci $CI_COMMIT_SHA | sed 's/^\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\).*/\1/')
+        if [ -z "$COMMIT_DATE" ]; then
+          echo "Error: $CI_COMMIT_SHA not checked out" >&2
+          exit 1
+        fi
+        export HELM_VERSION="1.1.$CI_PIPELINE_ID"
+        export HELM_NAME="bitwarden"
+        export APP_RELEASE="$COMMIT_DATE.$CI_PIPELINE_ID"
+      else
+        export HELM_VERSION="1.1.0-alpha.$IMAGE_TAG"
+        export HELM_NAME="bitwarden-${CI_COMMIT_REF_SLUG}"
+        export APP_RELEASE="$IMAGE_TAG"
+      fi
+    }
+
+check_charts:
+  image: ekreative/toolbox:helm-3
+  stage: pre_build
+  tags:
+    - kubernetes
+  except:
+    - tags
+  script:
+    - helm lint charts/bitwarden
+
+pre_deploy_chart:
+  image: ekreative/toolbox:helm-3
+  stage: pre_deploy
+  tags:
+    - kubernetes
+  except:
+    - tags
+  dependencies: []
+  script:
+    - tags_variables
+    - gcloud auth activate-service-account --key-file "$GCLOUD_KEY_FILE"
+    - helm package --destination charts --version "$HELM_VERSION" charts/bitwarden
+    - curl --fail --data-binary "@charts/bitwarden-$HELM_VERSION.tgz" "$HELM_CHARTS_URL/api/charts"
+    - |
+      if [ "$CI_COMMIT_REF_SLUG" == "master" ]; then
+        curl -H "PRIVATE-TOKEN: $GITLAB_API_TOKEN" -X POST -d "tag_name=$APP_RELEASE" -d "ref=$CI_COMMIT_SHA" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/repository/tags"
+      fi
+
+.deploy:
+  image: ekreative/toolbox:helm-3
+  stage: deploy
+  tags:
+    - kubernetes
+  variables:
+    APP_VALUES: ${REVIEW_VALUES}
+    APP_CLUSTER: ${CLUSTER_TEST}
+  when: manual
+  dependencies: []
+  script:
+    - tags_variables
+    - gcloud auth activate-service-account --key-file "$GCLOUD_KEY_FILE"
+    - $APP_CLUSTER
+    - helm repo add ekreative-charts "$HELM_CHARTS_URL"
+    - |
+      helm upgrade "$HELM_NAME" ekreative-charts/bitwarden \
+        --install \
+        --create-namespace \
+        --namespace bitwarden \
+        --version "$HELM_VERSION" \
+        -f $APP_VALUES
+    - echo "Deployed $APP_RELEASE to $CI_ENVIRONMENT_NAME"
+
+.stop:
+  image: ekreative/toolbox:helm-3
+  stage: deploy
+  tags:
+    - kubernetes
+  variables:
+    APP_CLUSTER: ${CLUSTER_TEST}
+  when: manual
+  dependencies: []
+  script:
+    - tags_variables
+    - gcloud auth activate-service-account --key-file "$GCLOUD_KEY_FILE"
+    - $APP_CLUSTER
+    - helm delete "$HELM_NAME" || true
+
+deploy_live:
+  extends: .deploy
+  environment:
+    name: live
+    url: https://bitwarden.ekreative.com
+  only:
+    - master
+  variables:
+    APP_CLUSTER: ${CLUSTER_LIVE}
+  before_script:
+    - export APP_VALUES="$LIVE_VALUES"

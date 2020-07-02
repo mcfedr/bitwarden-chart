@@ -64,6 +64,7 @@ pre_deploy_chart:
     APP_VALUES: ${REVIEW_VALUES}
     APP_CLUSTER: ${CLUSTER_TEST}
   when: manual
+  allow_failure: false
   dependencies: []
   script:
     - tags_variables

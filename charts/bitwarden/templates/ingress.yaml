@@ -4,10 +4,7 @@ kind: Ingress
 metadata:
   name: {{ include "bitwarden.fullname" . }}-nginx
   labels:
-    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
-    helm.sh/chart: {{ include "bitwarden.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "bitwarden.labels" . | nindent 4 }}
   annotations:
 {{- if .Values.ingress.ip }}
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.ip | quote }}

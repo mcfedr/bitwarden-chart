@@ -4,10 +4,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ include "bitwarden.fullname" . }}-mssql-backups
   labels:
-    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
-    helm.sh/chart: {{ include "bitwarden.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "bitwarden.labels" . | nindent 4 }}
     app.kubernetes.io/component: mssql
 spec:
   accessModes:

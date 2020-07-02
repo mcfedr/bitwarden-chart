@@ -4,10 +4,7 @@ kind: Service
 metadata:
   name: {{ include "bitwarden.fullname" . }}-api
   labels:
-    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
-    helm.sh/chart: {{ include "bitwarden.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "bitwarden.labels" . | nindent 4 }}
     app.kubernetes.io/component: api
 spec:
   type: {{ .Values.api.service.type }}
@@ -17,7 +14,6 @@ spec:
       protocol: TCP
       name: api
   selector:
-    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "bitwarden.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: core
 {{- end }}

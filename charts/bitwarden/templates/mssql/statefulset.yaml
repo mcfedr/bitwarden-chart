@@ -4,23 +4,18 @@ kind: StatefulSet
 metadata:
   name: {{ include "bitwarden.fullname" . }}-mssql
   labels:
-    app.kubernetes.io/name: {{ include "bitwarden.name" . }}
-    helm.sh/chart: {{ include "bitwarden.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "bitwarden.labels" . | nindent 4 }}
     app.kubernetes.io/component: mssql
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "bitwarden.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "bitwarden.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: mssql
   serviceName: {{ include "bitwarden.fullname" . }}-mssql
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "bitwarden.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "bitwarden.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: mssql
     spec:
       containers:

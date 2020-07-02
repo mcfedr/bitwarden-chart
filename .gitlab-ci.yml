@@ -6,7 +6,7 @@ stages:
 variables:
   IMAGE_TAG: ${CI_COMMIT_REF_SLUG}.${CI_PIPELINE_ID}
 
-before_script:
+.before_script: &before_script
   - |
     tags_variables() {
       if [ "$CI_COMMIT_REF_SLUG" == "master" ]; then
@@ -29,21 +29,22 @@ before_script:
       fi
     }
 
-check_charts:
+default:
   image: ekreative/toolbox:helm-3
-  stage: pre_build
   tags:
     - kubernetes
+  before_script:
+    - *before_script
+
+check_charts:
+  stage: pre_build
   except:
     - tags
   script:
     - helm lint charts/bitwarden
 
 pre_deploy_chart:
-  image: ekreative/toolbox:helm-3
   stage: pre_deploy
-  tags:
-    - kubernetes
   except:
     - tags
   dependencies: []
@@ -58,10 +59,7 @@ pre_deploy_chart:
       fi
 
 .deploy:
-  image: ekreative/toolbox:helm-3
   stage: deploy
-  tags:
-    - kubernetes
   variables:
     APP_VALUES: ${REVIEW_VALUES}
     APP_CLUSTER: ${CLUSTER_TEST}
@@ -82,10 +80,7 @@ pre_deploy_chart:
     - echo "Deployed $APP_RELEASE to $CI_ENVIRONMENT_NAME"
 
 .stop:
-  image: ekreative/toolbox:helm-3
   stage: deploy
-  tags:
-    - kubernetes
   variables:
     APP_CLUSTER: ${CLUSTER_TEST}
   when: manual
@@ -106,4 +101,6 @@ deploy_live:
   variables:
     APP_CLUSTER: ${CLUSTER_LIVE}
   before_script:
+    - *before_script
+    # Cannot use variables for this, https://gitlab.com/gitlab-org/gitlab/-/issues/198357
     - export APP_VALUES="$LIVE_VALUES"

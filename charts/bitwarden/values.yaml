@@ -242,8 +242,8 @@ certificates:
   kind: ClusterIssuer
 
 global:
-  coreVersion: 1.32.0
-  webVersion: 2.12.0
+  coreVersion: 1.35.1
+  webVersion: 2.15.1
   host: bitwarden.example.com
   internalIdentityKey: ""
   duoKey: ""

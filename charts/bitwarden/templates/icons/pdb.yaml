@@ -1,4 +1,4 @@
-{{- if and .Values.icons.enabled .Values.icons.pdb.enabled }}
+{{- if and .Values.icons.enabled .Values.icons.pdb.enabled .Values.global.pdb }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:

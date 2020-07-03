@@ -41,6 +41,7 @@ spec:
           mountPath: /var/opt/mssql
         - name: mssql-backups
           mountPath: /etc/bitwarden/mssql/backups
+        {{- if .Values.global.healthchecks }}
         livenessProbe:
           exec:
             command: ["sh", "-c", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -Q \"SELECT 1\""]
@@ -51,8 +52,11 @@ spec:
             command: ["sh", "-c", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -Q \"SELECT 1\""]
           initialDelaySeconds: 5
           periodSeconds: 10
+        {{- end }}
+        {{- if .Values.global.resources }}
         resources:
 {{ toYaml .Values.mssql.resources | indent 10 }}
+        {{- end }}
       volumes:
       - name: mssql-data
       {{- if .Values.mssql.persistence.data.enabled }}

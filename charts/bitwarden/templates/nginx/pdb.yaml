@@ -1,4 +1,4 @@
-{{- if and .Values.nginx.enabled .Values.nginx.pdb.enabled }}
+{{- if and .Values.nginx.enabled .Values.nginx.pdb.enabled .Values.global.pdb }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:

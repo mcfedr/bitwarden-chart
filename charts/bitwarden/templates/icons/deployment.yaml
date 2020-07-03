@@ -29,6 +29,7 @@ spec:
         - name: http
           containerPort: 5000
           protocol: TCP
+        {{- if .Values.global.healthchecks }}
         livenessProbe:
           httpGet:
             path: /google.com/icon.png
@@ -37,8 +38,11 @@ spec:
           httpGet:
             path: /google.com/icon.png
             port: http
+        {{- end }}
+        {{- if .Values.global.resources }}
         resources:
 {{ toYaml .Values.icons.resources | indent 10 }}
+        {{- end }}
       tolerations:
 {{ toYaml .Values.icons.tolerations | indent 8 }}
       affinity:

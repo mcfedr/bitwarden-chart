@@ -1,4 +1,4 @@
-{{- if and .Values.web.enabled .Values.web.vpa.enabled }}
+{{- if and .Values.web.enabled .Values.web.vpa.enabled .Values.global.vpa }}
 apiVersion: autoscaling.k8s.io/v1beta2
 kind: VerticalPodAutoscaler
 metadata:

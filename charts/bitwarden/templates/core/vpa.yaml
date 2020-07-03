@@ -1,5 +1,5 @@
 {{- if or .Values.attachments.enabled .Values.api.enabled .Values.admin.enabled .Values.identity.enabled }}
-{{- if .Values.core.vpa.enabled }}
+{{- if and .Values.core.vpa.enabled .Values.global.vpa }}
 apiVersion: autoscaling.k8s.io/v1beta2
 kind: VerticalPodAutoscaler
 metadata:

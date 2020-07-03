@@ -34,8 +34,10 @@ spec:
         volumeMounts:
         - name: web-config
           mountPath: /etc/bitwarden/web
+        {{- if .Values.global.resources }}
         resources:
 {{ toYaml .Values.web.resources | indent 10 }}
+        {{- end }}
       volumes:
         - name: web-config
           configMap:

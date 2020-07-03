@@ -43,6 +43,7 @@ spec:
           mountPath: /etc/bitwarden/core/attachments
           subPath: attachments
           readOnly: true
+        {{- if .Values.global.healthchecks }}
         livenessProbe:
           httpGet:
             path: /alive
@@ -51,8 +52,11 @@ spec:
           httpGet:
             path: /alive
             port: attachments
+        {{- end }}
+        {{- if .Values.global.resources }}
         resources:
 {{ toYaml .Values.attachments.resources | indent 10 }}
+        {{- end }}
       {{- end }}
       {{- if .Values.api.enabled }}
       - name: api

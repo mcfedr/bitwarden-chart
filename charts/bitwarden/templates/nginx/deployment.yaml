@@ -31,6 +31,7 @@ spec:
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/conf.d
+        {{- if .Values.global.healthchecks }}
         livenessProbe:
           httpGet:
             path: /server_ping
@@ -39,8 +40,11 @@ spec:
           httpGet:
             path: /server_ping
             port: http
+        {{- end }}
+        {{- if .Values.global.resources }}
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
+        {{- end }}
       volumes:
         - name: nginx-config
           configMap:

@@ -261,6 +261,10 @@ global:
     useDefaultCredentials: "false"
   disableUserRegistration: "false"
   admins: "admin@example.com"
+  healthchecks: true
+  pdb: true
+  resources: true
+  vpa: false
 
 nameOverride: ""
 fullnameOverride: ""

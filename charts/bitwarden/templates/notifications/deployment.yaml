@@ -30,6 +30,7 @@ spec:
         - name: http
           containerPort: 5000
           protocol: TCP
+        {{- if .Values.global.healthchecks }}
         livenessProbe:
           httpGet:
             path: /alive
@@ -38,8 +39,11 @@ spec:
           httpGet:
             path: /alive
             port: http
+        {{- end }}
+        {{- if .Values.global.resources }}
         resources:
 {{ toYaml .Values.notifications.resources | indent 10 }}
+        {{- end }}
       tolerations:
 {{ toYaml .Values.notifications.tolerations | indent 8 }}
       affinity:

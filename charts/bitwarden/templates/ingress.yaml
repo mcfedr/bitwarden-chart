@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "bitwarden.fullname" . }}-nginx
@@ -12,18 +12,25 @@ metadata:
 {{- if .Values.ingress.class }}
     kubernetes.io/ingress.class: {{ .Values.ingress.class | quote }}
 {{- end }}
+{{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+{{- end }}
 spec:
-  {{- if .Values.certificates.enabled }}
+  {{- if or .Values.certificates.enabled .Values.ingress.tls.enabled }}
   tls:
     - hosts:
         - {{ .Values.global.host | quote }}
-      secretName: {{ include "bitwarden.fullname" . }}-nginx-tls
+      secretName: {{ include "bitwarden.fullname" . }}-tls
   {{- end }}
   rules:
     - host: {{ .Values.global.host | quote }}
       http:
         paths:
           - backend:
-              serviceName: {{ include "bitwarden.fullname" . }}-nginx
-              servicePort: http
+              service:
+                name: {{ include "bitwarden.fullname" . }}-nginx
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
 {{- end -}}

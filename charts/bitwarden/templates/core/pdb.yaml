@@ -1,6 +1,10 @@
 {{- if or .Values.attachments.enabled .Values.api.enabled .Values.admin.enabled .Values.identity.enabled }}
 {{- if and .Values.global.pdb .Values.core.pdb.enabled }}
+{{- if .Capabilities.APIVersions.Has "policy/v1" }}
+apiVersion: policy/v1
+{{- else }}
 apiVersion: policy/v1beta1
+{{- end }}
 kind: PodDisruptionBudget
 metadata:
   name: {{ include "bitwarden.fullname" . }}-core
